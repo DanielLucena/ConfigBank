@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { ExampleService } from "../services/exampleService";
+import { handleError } from "../utils/errorHandler";
 
 export class ExampleController {
   private exampleService: ExampleService;
@@ -25,7 +26,7 @@ export class ExampleController {
       const newExample = await this.exampleService.createExample(exampleData);
       res.status(201).json(newExample);
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      handleError(res, error);
     }
   }
 
@@ -34,7 +35,7 @@ export class ExampleController {
       const examples = await this.exampleService.getAllExamples();
       res.status(200).json(examples);
     } catch (error) {
-      res.status(500).json({ message: "Internal server error", error });
+      handleError(res, error);
     }
   }
 
@@ -58,7 +59,7 @@ export class ExampleController {
       await this.exampleService.updateExampleById(id, updatedExampleData);
       res.status(200).json({ message: "Example updated successfully" });
     } catch (error) {
-      res.status(400).json({ message: "Invalid data", error });
+      handleError(res, error);
     }
   }
 }
