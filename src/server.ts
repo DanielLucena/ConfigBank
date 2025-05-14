@@ -9,7 +9,7 @@ app.use(express.json());
 
 app.get('/', (req, res) => {
   res.json({ endpoints: [
-    { method: 'POST', path: '/api/accounts' },
+    { method: 'POST', path: '/api/account' },
   ] });
 })
 
