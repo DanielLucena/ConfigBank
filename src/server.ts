@@ -11,6 +11,7 @@ app.get('/', (req, res) => {
   res.json({ endpoints: [
     { method: 'POST', path: '/api/account' },
     { method: 'POST', path: '/api/debit' },
+    { method: 'POST', path: '/api/credit' },
   ] });
 })
 
