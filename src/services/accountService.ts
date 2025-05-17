@@ -35,4 +35,36 @@ export class AccountService {
     if (!updatedAccount) throw new Error("Something went wrong updating the account");
     return updatedAccount;
   }
+  
+
+  async transferBetweenAccounts(
+    senderNumber: number,
+    receiverNumber: number,
+    amount: number
+  ): Promise<{ from: Account; to: Account }> {
+    const senderAccount = await this.repo.findByNumber(senderNumber);
+    if (senderAccount === null) throw new Error("There is no account with number " + senderNumber)
+
+    const toAccount = await this.repo.findByNumber(receiverNumber);
+    if (toAccount === null) throw new Error("There is no account with number " + receiverNumber)
+
+    const all = await this.repo.getAll();
+    const updated = all.map(acc => {
+      if (acc.number === senderNumber) {
+        return { ...acc, balance: acc.balance - amount };
+      }
+      if (acc.number === receiverNumber) {
+        return { ...acc, balance: acc.balance + amount };
+      }
+      return acc;
+    });
+
+    await this.repo.save(updated);
+
+    const updatedsenderAccount = updated.find(acc => acc.number === senderNumber);
+    const updatedReceiverAccount = updated.find(acc => acc.number === receiverNumber);
+
+    if (!updatedsenderAccount || !updatedReceiverAccount) throw new Error("Something went wrong updating the accounts");
+    return { from: updatedsenderAccount, to: updatedReceiverAccount };
+  }
 }
