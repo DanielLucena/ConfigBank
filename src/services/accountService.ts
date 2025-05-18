@@ -61,4 +61,22 @@ export class AccountService {
     if (!updatedAccount) throw new Error("Something went wrong updating the account");
     return updatedAccount;
   }
+  
+async transferBetweenAccounts(
+    senderNumber: number,
+    receiverNumber: number,
+    amount: number
+  ): Promise<{ from: Account; to: Account }> {
+    try {
+      const updatedsenderAccount = await this.debitFromAccount(senderNumber, amount);
+      const updatedReceiverAccount = await this.creditToAccount(receiverNumber, amount);
+      return { from: updatedsenderAccount, to: updatedReceiverAccount };
+    }
+    catch (err: any) {
+      if (err.message.includes("Something went wrong updating the account")) {
+        throw new Error("Something went wrong updating the accounts");
+      }
+      throw err;
+    }
+  }
 }
