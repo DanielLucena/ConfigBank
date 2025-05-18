@@ -35,4 +35,11 @@ export class AccountService {
     if (!updatedAccount) throw new Error("Something went wrong updating the account");
     return updatedAccount;
   }
+
+  async getAccountBalance(number: number): Promise<number> {
+    const account = await this.repo.findByNumber(number);
+    if (account === null) throw new Error("There is no account with number " + number)
+
+    return account.balance;
+  }
 }
