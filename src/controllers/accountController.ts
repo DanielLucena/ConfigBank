@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { AccountService } from "../services/accountService";
-import { createAccountSchema } from "../schemas/accountSchema";
+import { createAccountSchema, accountRequestSchema } from "../schemas/accountSchema";
 import { handleError } from "../utils/errorHandler";
 
 export class AccountController {
@@ -16,6 +16,17 @@ export class AccountController {
       const account = await this.service.createAccount(number);
 
       res.status(201).json(account);
+    } catch (err: any) {
+      handleError(res, err);
+    }
+  }
+
+  async getBalance(req: Request, res: Response): Promise<void> {
+    try {
+      const { number } = accountRequestSchema.parse(req.body);
+      const balance = await this.service.getAccountBalance(number);
+
+      res.status(200).json(balance);
     } catch (err: any) {
       handleError(res, err);
     }

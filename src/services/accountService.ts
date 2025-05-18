@@ -17,14 +17,21 @@ export class AccountService {
     return account;
   }
 
-  async debitFromAccount(number: number, amount: number): Promise<Account> {
+  async getAccountBalance(number: number): Promise<number> {
+    const account = await this.repo.findByNumber(number);
+    if (account === null) throw new Error("There is no account with number " + number)
+
+    return account.balance;
+  }
+
+  async creditToAccount(number: number, amount: number): Promise<Account> {
     const account = await this.repo.findByNumber(number);
     if (account === null) throw new Error("There is no account with number " + number)
 
     const all = await this.repo.getAll();
     const updated = all.map(acc => {
       if (acc.number === number) {
-        return { ...acc, balance: acc.balance - amount };
+        return { ...acc, balance: acc.balance + amount };
       }
       return acc;
     });
@@ -36,14 +43,14 @@ export class AccountService {
     return updatedAccount;
   }
 
-  async creditToAccount(number: number, amount: number): Promise<Account> {
+  async debitFromAccount(number: number, amount: number): Promise<Account> {
     const account = await this.repo.findByNumber(number);
     if (account === null) throw new Error("There is no account with number " + number)
 
     const all = await this.repo.getAll();
     const updated = all.map(acc => {
       if (acc.number === number) {
-        return { ...acc, balance: acc.balance + amount };
+        return { ...acc, balance: acc.balance - amount };
       }
       return acc;
     });
