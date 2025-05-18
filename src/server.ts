@@ -12,6 +12,7 @@ app.get('/', (req, res) => {
     { method: 'POST', path: '/api/account' },
     { method: 'POST', path: '/api/debit' },
     { method: 'POST', path: '/api/transfer' },
+    { method: 'POST', path: '/api/credit' },
   ] });
 })
 
