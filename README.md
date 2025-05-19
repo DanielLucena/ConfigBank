@@ -58,7 +58,7 @@ List of available endpoints:
 **RESPONSE**
 ```json
 {
-	"number": 2,
+	"number": 1,
 	"balance": 0
 }
 ```
