@@ -3,6 +3,7 @@
 <p align="center">
  <a href="#tech">Technologies</a> • 
  <a href="#started">Getting Started</a> • 
+ <a href="#routes">API Endpoints</a> •
  <a href="#colab">Collaborators</a>
 </p>
 
@@ -27,7 +28,121 @@
 
 ```bash
 cd ConfigBank
-npm some-command-to-run
+npm install
+npm run start:dev
+```
+
+<h2 id="routes">📍 API Endpoints</h2>
+
+List of available endpoints:
+​
+| route               | description                                          
+|----------------------|-----------------------------------------------------
+| <kbd>POST /api/account</kbd>     | create account [endpoint details](#post-account-detail)
+| <kbd>GET /api/account/balance</kbd>      | get balance by account [endpoint details](#get-balance-detail)
+| <kbd>POST /api/debit</kbd>      | debit account [endpoint details](#post-debit-detail)
+| <kbd>POST /api/credit</kbd>      | credit account [endpoint details](#post-credit-detail)
+| <kbd>POST /api/transfer</kbd>      | transfer between accounts [endpoint details](#post-transfer-detail)
+
+
+
+<h3 id="post-account-detail">POST /api/account</h3>
+
+**REQUEST**
+```json
+{
+  "number": 1
+}
+```
+
+**RESPONSE**
+```json
+{
+	"number": 1,
+	"balance": 0
+}
+```
+
+<h3 id="get-balance-detail">GET /api/account/balance</h3>
+
+**REQUEST**
+```json
+{
+  "number": 1
+}
+```
+
+**RESPONSE**
+```json
+0
+```
+
+<h3 id="post-debit-detail">POST /api/debit</h3>
+
+**REQUEST**
+```json
+{
+  "number": 1,
+  "amount": 10
+}
+```
+
+**RESPONSE**
+```json
+{
+	"message": "Debit successful",
+	"account": {
+		"number": 1,
+		"balance": -10
+	}
+}
+```
+
+<h3 id="post-credit-detail">POST /api/credit</h3>
+
+**REQUEST**
+```json
+{
+  "number": 1,
+  "amount": 10
+}
+```
+
+**RESPONSE**
+```json
+{
+  "message": "Credit successful",
+  "account": {
+    "number": 1,
+    "balance": 10
+  }
+}
+```
+
+<h3 id="post-transfer-detail">POST /api/transfer</h3>
+
+**REQUEST**
+```json
+{
+  "senderNumber": 1,
+  "receiverNumber": 2,
+  "amount": 10
+}
+```
+
+**RESPONSE**
+```json
+{
+	"message": "Transfer successful",
+	"from": {
+		"number": 1,
+		"balance": 0
+	},
+	"to": {
+		"number": 2,
+		"balance": 10
+	}
+}
 ```
 
 <h2 id="colab">🤝 Collaborators</h2>
