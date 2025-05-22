@@ -1,10 +1,10 @@
 import { AccountRepository } from "../repositories/accountRepository";
-import { accountSchema, Account, bonusAccountSchema, BonusAccount } from "../schemas/accountSchema";
+import { accountSchema, Account, bonusAccountSchema, BonusAccount, SavingsAccount } from "../schemas/accountSchema";
 
 export class AccountService {
   constructor(private repo = new AccountRepository()) { }
 
-  async createAccount(number: number, type?: "bonus"): Promise<Account> {
+  async createAccount(number: number, type?: "bonus" | "savings"): Promise<Account> {
     const existing = await this.repo.findByNumber(number);
     if (existing) throw new Error("Account already exists");
 
@@ -15,6 +15,12 @@ export class AccountService {
         balance: 0,
         type: "bonus",
         points: 10,
+      };
+    } else if (type === "savings") {
+      account = {
+        number,
+        balance: 0,
+        type: "savings",
       };
     } else {
       account = {
@@ -51,7 +57,7 @@ export class AccountService {
         if (acc.type === "bonus" && !isTransfer) {
           const typedAccount = acc as BonusAccount;
           const points = Math.floor(amount / 100);
-          newAccount = { ...newAccount, points: typedAccount.points + points };
+          return { ...newAccount, points: (typedAccount.points ?? 0) + points };
         }
 
         return newAccount;
@@ -124,6 +130,26 @@ export class AccountService {
       if (err.message.includes("Something went wrong updating the account")) {
         throw new Error("Something went wrong updating the accounts");
       }
+      throw err;
+    }
+  }
+
+  async earnInterest(interest: number): Promise<Account[]> {
+    try {
+      const all = await this.repo.getAll();
+      const updated = all.map(acc => {
+        if (acc.type === "savings") {
+          const typedAccount = acc as SavingsAccount;
+          return { ...typedAccount, balance: typedAccount.balance + (typedAccount.balance * (interest / 100)) };
+        }
+        return acc;
+      });
+
+      await this.repo.save(updated);
+
+      const updatedAccounts = updated.filter(acc => acc.type === "savings");
+      return updatedAccounts;
+    } catch (err: any) {
       throw err;
     }
   }
