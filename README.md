@@ -59,8 +59,8 @@ List of available endpoints:
 **RESPONSE**
 ```json
 {
-	"number": 1,
-	"balance": 0,
+  "number": 1,
+  "balance": 0,
   "type": "normal"
 }
 ```
@@ -77,9 +77,9 @@ List of available endpoints:
 **RESPONSE**
 ```json
 {
-	"number": 1,
-	"balance": 0,
-  "type": "bonus",
+  "number": 1,
+  "balance": 0,
+	"type": "bonus",
   "points": 10
 }
 ```
@@ -111,11 +111,11 @@ List of available endpoints:
 **RESPONSE**
 ```json
 {
-	"message": "Debit successful",
-	"account": {
-		"number": 1,
-		"balance": -10
-	}
+  "message": "Debit successful",
+  "account": {
+    "number": 1,
+    "balance": -10
+  }
 }
 ```
 
@@ -154,15 +154,15 @@ List of available endpoints:
 **RESPONSE**
 ```json
 {
-	"message": "Transfer successful",
-	"from": {
-		"number": 1,
-		"balance": 0
-	},
-	"to": {
-		"number": 2,
-		"balance": 10
-	}
+  "message": "Transfer successful",
+  "from": {
+    "number": 1,
+    "balance": 0
+  },
+  "to": {
+    "number": 2,
+    "balance": 10
+  }
 }
 ```
 
