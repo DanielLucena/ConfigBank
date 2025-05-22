@@ -79,7 +79,7 @@ List of available endpoints:
 {
   "number": 1,
   "balance": 0,
-	"type": "bonus",
+  "type": "bonus",
   "points": 10
 }
 ```
