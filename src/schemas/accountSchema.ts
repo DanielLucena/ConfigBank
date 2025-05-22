@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const accountSchema = z.object({
   number: z.number().int().positive(),
-  balance: z.number(),
+  balance: z.number().positive(),
 });
 
 export const createAccountSchema = z.object({
