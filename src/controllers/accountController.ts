@@ -13,7 +13,8 @@ export class AccountController {
   async create(req: Request, res: Response): Promise<void> {
     try {
       const { number } = createAccountSchema.parse(req.body);
-      const account = await this.service.createAccount(number);
+      const { type } = req.query as { type?: "bonus" };
+      const account = await this.service.createAccount(number, type);
 
       res.status(201).json(account);
     } catch (err: any) {
