@@ -1,0 +1,36 @@
+{
+  "name": "configbank",
+  "version": "1.0.0",
+  "description": "<h1 align=\"center\" style=\"font-weight: bold;\">ConfigBank 🏦</h1>",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsup src",
+    "start": "node dist/server.js",
+    "start:dev": "tsx watch src/server.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DanielLucena/ConfigBank.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DanielLucena/ConfigBank/issues"
+  },
+  "homepage": "https://github.com/DanielLucena/ConfigBank#readme",
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "uuid": "^11.1.0",
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.1",
+    "@types/node": "^22.15.17",
+    "@types/uuid": "^10.0.0",
+    "tsup": "^8.4.0",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  }
+}
