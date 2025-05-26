@@ -80,7 +80,11 @@ export class AccountService {
     const account = await this.repo.findByNumber(number);
     if (account === null) throw new Error("There is no account with number " + number)
 
-    if (account.balance < amount) throw new Error("Insufficient funds");
+    if ((account.type === "normal" || account.type === "bonus") && (account.balance - amount) < -1000) {
+      throw new Error("This operation would exceed the negative balance limit of R$ -1.000,00");
+    } else if (account.type === "savings" && account.balance < amount) {
+      throw new Error("Insufficient funds");
+    }
 
     const all = await this.repo.getAll();
     const updated = all.map(acc => {
