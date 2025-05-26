@@ -4,28 +4,32 @@ import { accountSchema, Account, bonusAccountSchema, BonusAccount, SavingsAccoun
 export class AccountService {
   constructor(private repo = new AccountRepository()) { }
 
-  async createAccount(number: number, type?: "bonus" | "savings"): Promise<Account> {
+  async createAccount(number: number, type?: "bonus" | "savings", initialBalance?: number): Promise<Account> {
     const existing = await this.repo.findByNumber(number);
     if (existing) throw new Error("Account already exists");
+
+    if (type === "savings" && initialBalance === undefined) {
+      throw new Error("Savings accounts require an initial balance");
+    }
 
     let account: Account;
     if (type === "bonus") {
       account = {
         number,
-        balance: 0,
+        balance: initialBalance || 0,
         type: "bonus",
         points: 10,
       };
     } else if (type === "savings") {
       account = {
         number,
-        balance: 0,
+        balance: initialBalance!,
         type: "savings",
       };
     } else {
       account = {
         number,
-        balance: 0,
+        balance: initialBalance || 0,
         type: type || "normal",
       };
     }
