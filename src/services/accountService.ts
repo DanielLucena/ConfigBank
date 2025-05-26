@@ -16,7 +16,7 @@ export class AccountService {
     if (type === "bonus") {
       account = {
         number,
-        balance: initialBalance || 0,
+        balance: 0,
         type: "bonus",
         points: 10,
       };
@@ -29,7 +29,7 @@ export class AccountService {
     } else {
       account = {
         number,
-        balance: initialBalance || 0,
+        balance: 0,
         type: type || "normal",
       };
     }
