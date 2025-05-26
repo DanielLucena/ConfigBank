@@ -7,6 +7,7 @@ export const accountSchema = z.object({
 
 export const createAccountSchema = z.object({
   number: z.number().int().positive(),
+  initialBalance: z.number().optional(),
 });
 
 export const accountRequestSchema = z.object({
