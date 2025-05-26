@@ -4,11 +4,15 @@ import { accountSchema, Account } from "../schemas/accountSchema";
 export class AccountService {
   constructor(private repo = new AccountRepository()) { }
 
-  async createAccount(number: number): Promise<Account> {
+  async createAccount(number: number, initialBalance?: number): Promise<Account> {
     const existing = await this.repo.findByNumber(number);
     if (existing) throw new Error("Account already exists");
 
-    const account: Account = accountSchema.parse({ number, balance: 0 });
+    if( initialBalance === undefined) {
+      throw new Error("Accounts require an initial balance");
+    }
+
+    const account: Account = accountSchema.parse({ number, balance: initialBalance });
 
     const all = await this.repo.getAll();
     all.push(account);
