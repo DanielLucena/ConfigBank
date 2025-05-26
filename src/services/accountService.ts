@@ -8,6 +8,10 @@ export class AccountService {
     const existing = await this.repo.findByNumber(number);
     if (existing) throw new Error("Account already exists");
 
+    if(type === undefined && initialBalance === undefined) {
+      throw new Error("Accounts require an initial balance");
+    }
+
     if (type === "savings" && initialBalance === undefined) {
       throw new Error("Savings accounts require an initial balance");
     }
@@ -29,7 +33,7 @@ export class AccountService {
     } else {
       account = {
         number,
-        balance: 0,
+        balance: initialBalance!,
         type: type || "normal",
       };
     }
