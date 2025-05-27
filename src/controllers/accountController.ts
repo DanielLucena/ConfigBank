@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { AccountService } from "../services/accountService";
-import { createAccountSchema, accountRequestSchema } from "../schemas/accountSchema";
+import { createAccountSchema, accountRequestSchema, interestRequestSchema } from "../schemas/accountSchema";
 import { handleError } from "../utils/errorHandler";
 
 export class AccountController {
@@ -12,8 +12,9 @@ export class AccountController {
 
   async create(req: Request, res: Response): Promise<void> {
     try {
-      const { number, initialBalance } = createAccountSchema.parse(req.body);
-      const account = await this.service.createAccount(number, initialBalance);
+      const { number } = createAccountSchema.parse(req.body);
+      const { type } = req.query as { type?: "bonus" | "savings" };
+      const account = await this.service.createAccount(number, type);
 
       res.status(201).json(account);
     } catch (err: any) {
@@ -27,6 +28,17 @@ export class AccountController {
       const balance = await this.service.getAccountBalance(number);
 
       res.status(200).json(balance);
+    } catch (err: any) {
+      handleError(res, err);
+    }
+  }
+
+  async earnInterest(req: Request, res: Response): Promise<void> {
+    try {
+      const { interest } = interestRequestSchema.parse(req.body);
+      const accounts = await this.service.earnInterest(interest);
+
+      res.status(200).json(accounts);
     } catch (err: any) {
       handleError(res, err);
     }

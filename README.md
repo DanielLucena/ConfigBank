@@ -39,7 +39,10 @@ List of available endpoints:
 | route               | description                                          
 |----------------------|-----------------------------------------------------
 | <kbd>POST /api/account</kbd>     | create account [endpoint details](#post-account-detail)
+| <kbd>POST /api/account?type=bonus</kbd>     | create bonus account [endpoint details](#post-bonus-account-detail)
+| <kbd>POST /api/account?type=savings</kbd>     | create savings account [endpoint details](#post-savings-account-detail)
 | <kbd>GET /api/account/balance</kbd>      | get balance by account [endpoint details](#get-balance-detail)
+| <kbd>POST /api/account/earn-interest</kbd>      | earn interest for accounts [endpoint details](#post-earn-interest-detail)
 | <kbd>POST /api/debit</kbd>      | debit account [endpoint details](#post-debit-detail)
 | <kbd>POST /api/credit</kbd>      | credit account [endpoint details](#post-credit-detail)
 | <kbd>POST /api/transfer</kbd>      | transfer between accounts [endpoint details](#post-transfer-detail)
@@ -58,8 +61,46 @@ List of available endpoints:
 **RESPONSE**
 ```json
 {
-	"number": 1,
-	"balance": 0
+  "number": 1,
+  "balance": 0,
+  "type": "normal"
+}
+```
+
+<h3 id="post-bonus-account-detail">POST /api/account?type=bonus</h3>
+
+**REQUEST**
+```json
+{
+  "number": 1
+}
+```
+
+**RESPONSE**
+```json
+{
+  "number": 1,
+  "balance": 0,
+  "type": "bonus",
+  "points": 10
+}
+```
+
+<h3 id="post-savings-account-detail">POST /api/account?type=savings</h3>
+
+**REQUEST**
+```json
+{
+  "number": 1
+}
+```
+
+**RESPONSE**
+```json
+{
+  "number": 1,
+  "balance": 0,
+  "type": "savings",
 }
 ```
 
@@ -77,6 +118,26 @@ List of available endpoints:
 0
 ```
 
+<h3 id="post-earn-interest-detail">GET /api/account/earn-interest</h3>
+
+**REQUEST**
+```json
+{
+  "interest": 10
+}
+```
+
+**RESPONSE**
+```json
+[
+{
+  "number": 1,
+  "balance": 0,
+  "type": "savings",
+}
+]
+```
+
 <h3 id="post-debit-detail">POST /api/debit</h3>
 
 **REQUEST**
@@ -90,11 +151,11 @@ List of available endpoints:
 **RESPONSE**
 ```json
 {
-	"message": "Debit successful",
-	"account": {
-		"number": 1,
-		"balance": -10
-	}
+  "message": "Debit successful",
+  "account": {
+    "number": 1,
+    "balance": -10
+  }
 }
 ```
 
@@ -133,15 +194,15 @@ List of available endpoints:
 **RESPONSE**
 ```json
 {
-	"message": "Transfer successful",
-	"from": {
-		"number": 1,
-		"balance": 0
-	},
-	"to": {
-		"number": 2,
-		"balance": 10
-	}
+  "message": "Transfer successful",
+  "from": {
+    "number": 1,
+    "balance": 0
+  },
+  "to": {
+    "number": 2,
+    "balance": 10
+  }
 }
 ```
 

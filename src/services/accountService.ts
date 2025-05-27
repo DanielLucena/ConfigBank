@@ -1,19 +1,40 @@
 import { AccountRepository } from "../repositories/accountRepository";
-import { accountSchema, Account } from "../schemas/accountSchema";
+import { accountSchema, Account, bonusAccountSchema, BonusAccount, SavingsAccount } from "../schemas/accountSchema";
 
 export class AccountService {
   constructor(private repo = new AccountRepository()) { }
 
-  async createAccount(number: number, initialBalance?: number): Promise<Account> {
+  async createAccount(number: number, type?: "bonus" | "savings", initialBalance?: number): Promise<Account> {
     const existing = await this.repo.findByNumber(number);
     if (existing) throw new Error("Account already exists");
 
-    if( initialBalance === undefined) {
+    if(type === undefined && initialBalance === undefined) {
       throw new Error("Accounts require an initial balance");
     }
 
-    const account: Account = accountSchema.parse({ number, balance: initialBalance });
+    let account: Account;
+    if (type === "bonus") {
+      account = {
+        number,
+        balance: 0,
+        type: "bonus",
+        points: 10,
+      };
+    } else if (type === "savings") {
+      account = {
+        number,
+        balance: 0,
+        type: "savings",
+      };
+    } else {
+      account = {
+        number,
+        balance: 0,
+        type: type || "normal",
+      };
+    }
 
+    accountSchema.parse(account);
     const all = await this.repo.getAll();
     all.push(account);
 
@@ -28,14 +49,22 @@ export class AccountService {
     return account.balance;
   }
 
-  async creditToAccount(number: number, amount: number): Promise<Account> {
+  async creditToAccount(number: number, amount: number, isTransfer = false): Promise<Account> {
     const account = await this.repo.findByNumber(number);
     if (account === null) throw new Error("There is no account with number " + number)
 
     const all = await this.repo.getAll();
     const updated = all.map(acc => {
       if (acc.number === number) {
-        return { ...acc, balance: acc.balance + amount };
+        let newAccount = { ...acc, balance: acc.balance + amount };
+
+        if (acc.type === "bonus" && !isTransfer) {
+          const typedAccount = acc as BonusAccount;
+          const points = Math.floor(amount / 100);
+          return { ...newAccount, points: (typedAccount.points ?? 0) + points };
+        }
+
+        return newAccount;
       }
       return acc;
     });
@@ -67,21 +96,64 @@ export class AccountService {
     if (!updatedAccount) throw new Error("Something went wrong updating the account");
     return updatedAccount;
   }
-  
-async transferBetweenAccounts(
+
+  async transferBetweenAccounts(
     senderNumber: number,
     receiverNumber: number,
     amount: number
   ): Promise<{ from: Account; to: Account }> {
+    const senderAccount = await this.repo.findByNumber(senderNumber);
+    const receiverAccount = await this.repo.findByNumber(receiverNumber);
+    if (senderAccount === null || receiverAccount === null) throw new Error("There is no account with number " + senderNumber);
+
     try {
-      const updatedsenderAccount = await this.debitFromAccount(senderNumber, amount);
-      const updatedReceiverAccount = await this.creditToAccount(receiverNumber, amount);
-      return { from: updatedsenderAccount, to: updatedReceiverAccount };
+      const updatedSender = await this.debitFromAccount(senderNumber, amount);
+      const updatedReceiverAccount = await this.creditToAccount(receiverNumber, amount, true);
+
+      if (updatedReceiverAccount.type === "bonus") {
+        const all = await this.repo.getAll();
+        const updated = all.map(acc => {
+          const typedAccount = acc as BonusAccount;
+
+          if (typedAccount.number === receiverNumber && typedAccount.type === "bonus") {
+            const bonus = Math.floor(amount / 200);
+            return { ...typedAccount, points: typedAccount.points + bonus };
+          }
+          
+          return typedAccount;
+        });
+
+        await this.repo.save(updated);
+      }
+
+      const finalReceiver = await this.repo.findByNumber(receiverNumber);
+
+      return { from: updatedSender!, to: finalReceiver! };
     }
     catch (err: any) {
       if (err.message.includes("Something went wrong updating the account")) {
         throw new Error("Something went wrong updating the accounts");
       }
+      throw err;
+    }
+  }
+
+  async earnInterest(interest: number): Promise<Account[]> {
+    try {
+      const all = await this.repo.getAll();
+      const updated = all.map(acc => {
+        if (acc.type === "savings") {
+          const typedAccount = acc as SavingsAccount;
+          return { ...typedAccount, balance: typedAccount.balance + (typedAccount.balance * (interest / 100)) };
+        }
+        return acc;
+      });
+
+      await this.repo.save(updated);
+
+      const updatedAccounts = updated.filter(acc => acc.type === "savings");
+      return updatedAccounts;
+    } catch (err: any) {
       throw err;
     }
   }
