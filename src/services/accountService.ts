@@ -4,9 +4,13 @@ import { accountSchema, Account, bonusAccountSchema, BonusAccount, SavingsAccoun
 export class AccountService {
   constructor(private repo = new AccountRepository()) { }
 
-  async createAccount(number: number, type?: "bonus" | "savings"): Promise<Account> {
+  async createAccount(number: number, type?: "bonus" | "savings", initialBalance?: number): Promise<Account> {
     const existing = await this.repo.findByNumber(number);
     if (existing) throw new Error("Account already exists");
+
+    if(type === undefined && initialBalance === undefined) {
+      throw new Error("Accounts require an initial balance");
+    }
 
     let account: Account;
     if (type === "bonus") {

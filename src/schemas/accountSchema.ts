@@ -25,6 +25,7 @@ export const accountSchema = z.union([
 
 export const createAccountSchema = z.object({
   number: z.number().int().positive(),
+  initialBalance: z.number().optional(),
 });
 
 export const accountRequestSchema = z.object({
