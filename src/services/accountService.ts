@@ -124,7 +124,7 @@ export class AccountService {
           const typedAccount = acc as BonusAccount;
 
           if (typedAccount.number === receiverNumber && typedAccount.type === "bonus") {
-            const bonus = Math.floor(amount / 200);
+            const bonus = Math.floor(amount / 150);
             return { ...typedAccount, points: typedAccount.points + bonus };
           }
           
