@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsup src",
     "start": "node dist/server.js",
-    "start:dev": "tsx watch src/server.ts"
+    "start:dev": "tsx watch src/server.ts",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -27,8 +28,11 @@
   },
   "devDependencies": {
     "@types/express": "^5.0.1",
+    "@types/jest": "^30.0.0",
     "@types/node": "^22.15.17",
     "@types/uuid": "^10.0.0",
+    "jest": "^30.0.0",
+    "ts-jest": "^29.4.0",
     "tsup": "^8.4.0",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3"
