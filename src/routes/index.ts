@@ -9,10 +9,10 @@ import { transferRouter } from './transfer.routes';
 const router = Router();
 
 router.use('/example', exampleRouter);
-router.use('/account', accountRouter);
-router.use('/debit', debitRouter);
-router.use('/credit', creditRouter);
-router.use('/transfer', transferRouter);
+router.use('/banco/conta', accountRouter);
+//router.use('/debit', debitRouter);
+//router.use('/credit', creditRouter);
+//router.use('/transfer', transferRouter);
 
 
 export { router };
