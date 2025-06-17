@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { AccountService } from "../services/accountService";
-import { createAccountSchema, accountRequestSchema, interestRequestSchema } from "../schemas/accountSchema";
+import { createAccountSchema, interestRequestSchema } from "../schemas/accountSchema";
 import { handleError } from "../utils/errorHandler";
 
 export class AccountController {
@@ -25,7 +25,12 @@ export class AccountController {
 
   async getBalance(req: Request, res: Response): Promise<void> {
     try {
-      const { number } = accountRequestSchema.parse(req.body);
+      const number = parseInt(req.params.id);
+      if (isNaN(number)) {
+        res.status(400).json({ message: "Invalid account number" });
+        return;
+      }
+
       const balance = await this.service.getAccountBalance(number);
 
       res.status(200).json(balance);

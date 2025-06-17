@@ -41,10 +41,9 @@ List of available endpoints:
 | <kbd>POST /api/banco/conta</kbd>     | create account [endpoint details](#post-account-detail)
 | <kbd>POST /api/banco/conta?type=bonus</kbd>     | create bonus account [endpoint details](#post-bonus-account-detail)
 | <kbd>POST /api/banco/conta?type=savings</kbd>     | create savings account [endpoint details](#post-savings-account-detail)
-| <kbd>GET /api/banco/conta</kbd>      | get account [endpoint details](#get-account-detail)
-| <kbd>GET /api/banco/conta/saldo</kbd>      | get balance by account [endpoint details](#get-balance-detail)
-| <kbd>PUT /api/banco/conta/credito</kbd>      | credit account [endpoint details](#post-credit-detail)
-| <kbd>PUT /api/banco/conta/debito</kbd>      | debit account [endpoint details](#post-debit-detail)
+| <kbd>GET /api/banco/conta/:id/saldo</kbd>      | get balance by account [endpoint details](#get-balance-detail)
+| <kbd>PUT /api/banco/conta/:id/credito</kbd>      | credit account [endpoint details](#post-credit-detail)
+| <kbd>PUT /api/banco/conta/:id/debito</kbd>      | debit account [endpoint details](#post-debit-detail)
 | <kbd>PUT /api/banco/conta/transferencia</kbd>      | transfer between accounts [endpoint details](#post-transfer-detail)
 | <kbd>PUT /api/banco/conta/rendimento</kbd>      | earn interest for accounts [endpoint details](#post-earn-interest-detail)
 
@@ -105,25 +104,7 @@ List of available endpoints:
 }
 ```
 
-<h3 id="get-account-detail">GET /api/banco/conta</h3>
-
-**REQUEST**
-```json
-{
-  "number": 1
-}
-```
-
-**RESPONSE**
-```json
-{
-  "number": 1,
-  "balance": 0,
-  "type": "normal",
-}
-```
-
-<h3 id="get-balance-detail">GET /api/banco/conta/saldo</h3>
+<h3 id="get-balance-detail">GET /api/banco/conta/:id/saldo</h3>
 
 **REQUEST**
 ```json
@@ -137,7 +118,7 @@ List of available endpoints:
 0
 ```
 
-<h3 id="post-credit-detail">PUT /api/banco/conta/credito</h3>
+<h3 id="post-credit-detail">PUT /api/banco/conta/:id/credito</h3>
 
 **REQUEST**
 ```json
@@ -158,7 +139,7 @@ List of available endpoints:
 }
 ```
 
-<h3 id="post-debit-detail">PUT /api/banco/conta/debito</h3>
+<h3 id="post-debit-detail">PUT /api/banco/conta/:id/debito</h3>
 
 **REQUEST**
 ```json

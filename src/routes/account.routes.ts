@@ -11,10 +11,9 @@ const debitController = new DebitController();
 const transferController = new TransferController();
 
 accountRouter.post('/', (req, res) => accountController.create(req, res));
-accountRouter.get('/', (req, res) => accountController.create(req, res));
-accountRouter.get('/saldo', (req, res) => accountController.getBalance(req, res));
-accountRouter.put('/credito', (req, res) => creditController.creditAmount(req, res));
-accountRouter.put('/debito', (req, res) => debitController.debitAmount(req, res));
+accountRouter.get('/:id/saldo', (req, res) => accountController.getBalance(req, res));
+accountRouter.put('/:id/credito', (req, res) => creditController.creditAmount(req, res));
+accountRouter.put('/:id/debito', (req, res) => debitController.debitAmount(req, res));
 accountRouter.put('/transferencia', (req, res) => transferController.transferBetweenAccounts(req, res));
 accountRouter.put('/rendimento', (req, res) => accountController.earnInterest(req, res));
 
