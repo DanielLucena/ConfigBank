@@ -4,6 +4,12 @@ import { accountSchema, Account, bonusAccountSchema, BonusAccount, SavingsAccoun
 export class AccountService {
   constructor(private repo = new AccountRepository()) { }
 
+  async getAccount(number: number): Promise<Account> {
+    const account = await this.repo.findByNumber(number);
+    if (account === null) throw new Error("There is no account with number " + number);
+    return account;
+  }
+
   async createAccount(number: number, type?: "bonus" | "savings", initialBalance?: number): Promise<Account> {
     const existing = await this.repo.findByNumber(number);
     if (existing) throw new Error("Account already exists");
