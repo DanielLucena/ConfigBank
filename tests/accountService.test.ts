@@ -157,5 +157,50 @@ describe('AccountService', () => {
   });
 
   describe('earnInterest', () => {
+    it('should apply interest to all savings accounts', async () => {
+      const savingsAccounts: Account[] = [
+        { number: 1, type: 'savings', balance: 1000 },
+        { number: 2, type: 'savings', balance: 500 },
+      ];
+
+      const otherAccounts: Account[] = [
+        { number: 3, type: 'normal', balance: 200 },
+        { number: 4, type: 'bonus', balance: 100, points: 5 },
+      ];
+
+      const allAccounts = [...savingsAccounts, ...otherAccounts];
+
+      repo.getAll.mockResolvedValue(allAccounts);
+      repo.save.mockResolvedValue(undefined);
+
+      const result = await service.earnInterest(10); // 10% interest
+
+      expect(repo.save).toHaveBeenCalledWith([
+        { number: 1, type: 'savings', balance: 1100 },
+        { number: 2, type: 'savings', balance: 550 },
+        { number: 3, type: 'normal', balance: 200 },
+        { number: 4, type: 'bonus', balance: 100, points: 5 },
+      ]);
+
+      expect(result).toEqual([
+        { number: 1, type: 'savings', balance: 1100 },
+        { number: 2, type: 'savings', balance: 550 },
+      ]);
+    });
+
+    it('should return empty array if no savings accounts exist', async () => {
+      const accounts: Account[] = [
+        { number: 1, type: 'normal', balance: 100 },
+        { number: 2, type: 'bonus', balance: 200, points: 10 },
+      ];
+
+      repo.getAll.mockResolvedValue(accounts);
+      repo.save.mockResolvedValue(undefined);
+
+      const result = await service.earnInterest(5);
+
+      expect(repo.save).toHaveBeenCalledWith(accounts);
+      expect(result).toEqual([]);
+    });
   });
 });
