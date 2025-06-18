@@ -18,6 +18,62 @@ describe('AccountService', () => {
   });
 
   describe('createAccount', () => {
+    it('should create normal account', async () => {
+      const account: Account = { number: 1, type: 'normal', balance: 1000 };
+
+      repo.getAll.mockResolvedValue([]);
+      repo.save.mockResolvedValue();
+
+      const result = await service.createAccount(account.number, undefined, account.balance);
+
+      expect(result).toEqual(account);
+    });
+
+    it('should create bonus account', async () => {
+      const account: Account = { number: 1, type: 'bonus', balance: 0, points: 10 };
+
+      repo.getAll.mockResolvedValue([]);
+      repo.save.mockResolvedValue();
+
+      const result = await service.createAccount(account.number, 'bonus', account.balance);
+
+      expect(result).toEqual(account);
+    });
+
+    it('should create savings account', async () => {
+      const account: Account = { number: 1, type: 'savings', balance: 1000 };
+
+      repo.getAll.mockResolvedValue([]);
+      repo.save.mockResolvedValue();
+
+      const result = await service.createAccount(account.number, 'savings', account.balance);
+
+      expect(result).toEqual(account);
+    });
+
+    it('should throw if account already exists', async () => {
+      const account: Account = { number: 1, type: 'savings', balance: 1000 };
+
+      service.createAccount(1, "savings", 100 );
+      repo.findByNumber.mockResolvedValue(account);
+      repo.getAll.mockResolvedValue([account]);
+
+      await expect(service.createAccount(1, "savings", 100)).rejects.toThrow(
+        "Account already exists"
+      );
+    });
+
+    it('should throw if account does not have a initial balance', async () => {
+      await expect(service.createAccount(1, undefined, undefined)).rejects.toThrow(
+        "Accounts require an initial balance"
+      );
+    });
+
+    it('should throw if savings account does not have a initial balance', async () => {
+      await expect(service.createAccount(1, 'savings', undefined)).rejects.toThrow(
+        "Savings accounts require an initial balance"
+      );
+    });
   });
 
   describe('getAccount', () => {
