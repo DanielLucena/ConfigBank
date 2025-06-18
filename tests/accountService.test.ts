@@ -27,6 +27,56 @@ describe('AccountService', () => {
   });
 
   describe('debitFromAccount', () => {
+    it('should debit from account', async () => {
+      const account: Account = { number: 1, type: 'normal', balance: 1000 };
+      const amount = 200;
+
+      repo.findByNumber.mockImplementation((num: number) => {
+        if (num === 1) return Promise.resolve(account);
+        return Promise.resolve(null);
+      });
+
+      repo.getAll.mockResolvedValue([account]);
+      repo.save.mockResolvedValue();
+
+      const result = await service.debitFromAccount(1, amount);
+
+      expect(result).toEqual({ ...account, balance: 800 });
+    });
+
+    it('should throw if transfer amount is negative', async () => {
+      await expect(service.debitFromAccount(1, -100)).rejects.toThrow(
+        "Transfer amount must not be negative"
+      );
+    });
+
+    it('should throw if the balance would exceed negative limit for normal and bonus accounts', async () => {
+      const account: Account = { number: 1, type: 'normal', balance: -900 };
+      const amount = 200;
+
+      repo.findByNumber.mockImplementation((num: number) => {
+        if (num === 1) return Promise.resolve(account);
+        return Promise.resolve(null);
+      });
+
+      await expect(service.debitFromAccount(1, amount)).rejects.toThrow(
+        "This operation would exceed the negative balance limit of R$ -1.000,00"
+      );
+    });
+
+    it('should throw if the balance would exceed negative limit for savings accounts', async () => {
+      const account: Account = { number: 1, type: 'savings', balance: 100 };
+      const amount = 200;
+
+      repo.findByNumber.mockImplementation((num: number) => {
+        if (num === 1) return Promise.resolve(account);
+        return Promise.resolve(null);
+      });
+
+      await expect(service.debitFromAccount(1, amount)).rejects.toThrow(
+        "Insufficient funds"
+      );
+    });
   });
 
   describe('creditToAccount', () => {
