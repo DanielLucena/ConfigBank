@@ -9,12 +9,12 @@ app.use(express.json());
 
 app.get('/', (req, res) => {
   res.json({ endpoints: [
-    { method: 'POST', path: '/api/account' },
-    { method: 'GET', path: '/api/account/balance' },
-    { method: 'POST', path: '/api/account/earn-interest' },
-    { method: 'POST', path: '/api/debit' },
-    { method: 'POST', path: '/api/transfer' },
-    { method: 'POST', path: '/api/credit' },
+    { method: 'POST', path: '/api/banco/conta' },
+    { method: 'GET', path: '/api/banco/conta/:id/saldo' },
+    { method: 'PUT', path: '/api/banco/conta/:id/credito' },
+    { method: 'PUT', path: '/api/banco/conta/:id/debito' },
+    { method: 'PUT', path: '/api/banco/conta/transferencia' },
+    { method: 'PUT', path: '/api/banco/conta/rendimento' },
   ] });
 })
 

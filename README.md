@@ -38,18 +38,18 @@ List of available endpoints:
 ​
 | route               | description                                          
 |----------------------|-----------------------------------------------------
-| <kbd>POST /api/account</kbd>     | create account [endpoint details](#post-account-detail)
-| <kbd>POST /api/account?type=bonus</kbd>     | create bonus account [endpoint details](#post-bonus-account-detail)
-| <kbd>POST /api/account?type=savings</kbd>     | create savings account [endpoint details](#post-savings-account-detail)
-| <kbd>GET /api/account/balance</kbd>      | get balance by account [endpoint details](#get-balance-detail)
-| <kbd>POST /api/account/earn-interest</kbd>      | earn interest for accounts [endpoint details](#post-earn-interest-detail)
-| <kbd>POST /api/debit</kbd>      | debit account [endpoint details](#post-debit-detail)
-| <kbd>POST /api/credit</kbd>      | credit account [endpoint details](#post-credit-detail)
-| <kbd>POST /api/transfer</kbd>      | transfer between accounts [endpoint details](#post-transfer-detail)
+| <kbd>POST /api/banco/conta</kbd>     | create account [endpoint details](#post-account-detail)
+| <kbd>POST /api/banco/conta?type=bonus</kbd>     | create bonus account [endpoint details](#post-bonus-account-detail)
+| <kbd>POST /api/banco/conta?type=savings</kbd>     | create savings account [endpoint details](#post-savings-account-detail)
+| <kbd>GET /api/banco/conta/:id/saldo</kbd>      | get balance by account [endpoint details](#get-balance-detail)
+| <kbd>PUT /api/banco/conta/:id/credito</kbd>      | credit account [endpoint details](#post-credit-detail)
+| <kbd>PUT /api/banco/conta/:id/debito</kbd>      | debit account [endpoint details](#post-debit-detail)
+| <kbd>PUT /api/banco/conta/transferencia</kbd>      | transfer between accounts [endpoint details](#post-transfer-detail)
+| <kbd>PUT /api/banco/conta/rendimento</kbd>      | earn interest for accounts [endpoint details](#post-earn-interest-detail)
 
 
 
-<h3 id="post-account-detail">POST /api/account</h3>
+<h3 id="post-account-detail">POST /api/banco/conta</h3>
 
 **REQUEST**
 ```json
@@ -67,7 +67,7 @@ List of available endpoints:
 }
 ```
 
-<h3 id="post-bonus-account-detail">POST /api/account?type=bonus</h3>
+<h3 id="post-bonus-account-detail">POST /api/banco/conta?type=bonus</h3>
 
 **REQUEST**
 ```json
@@ -86,7 +86,7 @@ List of available endpoints:
 }
 ```
 
-<h3 id="post-savings-account-detail">POST /api/account?type=savings</h3>
+<h3 id="post-savings-account-detail">POST /api/banco/conta?type=savings</h3>
 
 **REQUEST**
 ```json
@@ -104,7 +104,7 @@ List of available endpoints:
 }
 ```
 
-<h3 id="get-balance-detail">GET /api/account/balance</h3>
+<h3 id="get-balance-detail">GET /api/banco/conta/:id/saldo</h3>
 
 **REQUEST**
 ```json
@@ -118,48 +118,7 @@ List of available endpoints:
 0
 ```
 
-<h3 id="post-earn-interest-detail">GET /api/account/earn-interest</h3>
-
-**REQUEST**
-```json
-{
-  "interest": 10
-}
-```
-
-**RESPONSE**
-```json
-[
-{
-  "number": 1,
-  "balance": 0,
-  "type": "savings",
-}
-]
-```
-
-<h3 id="post-debit-detail">POST /api/debit</h3>
-
-**REQUEST**
-```json
-{
-  "number": 1,
-  "amount": 10
-}
-```
-
-**RESPONSE**
-```json
-{
-  "message": "Debit successful",
-  "account": {
-    "number": 1,
-    "balance": -10
-  }
-}
-```
-
-<h3 id="post-credit-detail">POST /api/credit</h3>
+<h3 id="post-credit-detail">PUT /api/banco/conta/:id/credito</h3>
 
 **REQUEST**
 ```json
@@ -180,7 +139,28 @@ List of available endpoints:
 }
 ```
 
-<h3 id="post-transfer-detail">POST /api/transfer</h3>
+<h3 id="post-debit-detail">PUT /api/banco/conta/:id/debito</h3>
+
+**REQUEST**
+```json
+{
+  "number": 1,
+  "amount": 10
+}
+```
+
+**RESPONSE**
+```json
+{
+  "message": "Debit successful",
+  "account": {
+    "number": 1,
+    "balance": -10
+  }
+}
+```
+
+<h3 id="post-transfer-detail">PUT /api/banco/conta/transferencia</h3>
 
 **REQUEST**
 ```json
@@ -204,6 +184,26 @@ List of available endpoints:
     "balance": 10
   }
 }
+```
+
+<h3 id="post-earn-interest-detail">PUT /api/banco/conta/rendimento</h3>
+
+**REQUEST**
+```json
+{
+  "interest": 10
+}
+```
+
+**RESPONSE**
+```json
+[
+{
+  "number": 1,
+  "balance": 0,
+  "type": "savings",
+}
+]
 ```
 
 <h2 id="colab">🤝 Collaborators</h2>

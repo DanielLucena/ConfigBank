@@ -28,10 +28,6 @@ export const createAccountSchema = z.object({
   initialBalance: z.number().optional(),
 });
 
-export const accountRequestSchema = z.object({
-  number: z.number().int().positive(),
-});
-
 export const interestRequestSchema = baseAccountSchema.extend({
   interest: z.number().min(0).max(100),
 });
