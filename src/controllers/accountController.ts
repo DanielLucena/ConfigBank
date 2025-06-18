@@ -10,6 +10,22 @@ export class AccountController {
     this.service = new AccountService();
   }
 
+  async get(req: Request, res: Response): Promise<void> {
+    try {
+      const number = parseInt(req.params.id);
+
+      if (isNaN(number)) {
+        res.status(400).json({ message: "Invalid account number" });
+        return;
+      }
+      
+      const account = await this.service.getAccount(number);
+      res.status(200).json(account);
+    } catch (err: any) {
+      handleError(res, err);
+    }
+  }
+
   async create(req: Request, res: Response): Promise<void> {
     try {
       const { number, initialBalance } = createAccountSchema.parse(req.body);

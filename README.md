@@ -44,6 +44,7 @@ List of available endpoints:
 ​
 | route               | description                                          
 |----------------------|-----------------------------------------------------
+| <kdb>GET /api/banco/conta/:id</kbd>      | get account by number [endpoint details](#get-account-detail)
 | <kbd>POST /api/banco/conta</kbd>     | create account [endpoint details](#post-account-detail)
 | <kbd>POST /api/banco/conta?type=bonus</kbd>     | create bonus account [endpoint details](#post-bonus-account-detail)
 | <kbd>POST /api/banco/conta?type=savings</kbd>     | create savings account [endpoint details](#post-savings-account-detail)
@@ -54,6 +55,18 @@ List of available endpoints:
 | <kbd>PUT /api/banco/conta/rendimento</kbd>      | earn interest for accounts [endpoint details](#post-earn-interest-detail)
 
 
+
+<h3 id="get-account-detail">GET /api/banco/conta/:id</h3>
+
+**RESPONSE**
+```json
+{
+  "number": 1,
+  "balance": 0,
+  "type": "bonus",
+  "points": 10
+}
+```
 
 <h3 id="post-account-detail">POST /api/banco/conta</h3>
 
