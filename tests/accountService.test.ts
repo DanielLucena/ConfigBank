@@ -21,6 +21,60 @@ describe('AccountService', () => {
   });
 
   describe('getAccount', () => {
+    it('should return normal account', async () => {
+      const account: Account = { number: 1, type: 'normal', balance: 1000 };
+
+      repo.findByNumber.mockImplementation((num: number) => {
+        if (num === 1) return Promise.resolve(account);
+        return Promise.resolve(null);
+      });
+
+      repo.getAll.mockResolvedValue([account]);
+      repo.save.mockResolvedValue();
+
+      const result = await service.getAccount(1);
+
+      expect(result).toEqual(account);
+    });
+
+    it('should return bonus account', async () => {
+      const account: Account = { number: 1, type: 'bonus', balance: 1000 };
+
+      repo.findByNumber.mockImplementation((num: number) => {
+        if (num === 1) return Promise.resolve(account);
+        return Promise.resolve(null);
+      });
+
+      repo.getAll.mockResolvedValue([account]);
+      repo.save.mockResolvedValue();
+
+      const result = await service.getAccount(1);
+
+      expect(result).toEqual(account);
+    });
+
+    it('should return savings account', async () => {
+      const account: Account = { number: 1, type: 'savings', balance: 1000 };
+
+      repo.findByNumber.mockImplementation((num: number) => {
+        if (num === 1) return Promise.resolve(account);
+        return Promise.resolve(null);
+      });
+
+      repo.getAll.mockResolvedValue([account]);
+      repo.save.mockResolvedValue();
+
+      const result = await service.getAccount(1);
+
+      expect(result).toEqual(account);
+    });
+
+    it('should throw if account does not exist', async () => {
+      repo.findByNumber.mockResolvedValue(null);
+      await expect(service.getAccount(8)).rejects.toThrow(
+        "There is no account with number 8"
+      );
+    });
   });
 
   describe('getBalance', () => {
