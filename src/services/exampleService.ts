@@ -1,4 +1,4 @@
-import { ExampleRepository } from '../repositories/exampleRepository';
+import { ExampleRepository } from "../repositories/exampleRepository";
 import { exampleSchema, Example } from "../schemas/exampleSchema";
 
 export class ExampleService {
@@ -13,10 +13,12 @@ export class ExampleService {
     return example;
   }
 
-  async createExample(exampleData: Example[]): Promise<Example> {
+  async createExample(exampleData: Example): Promise<Example> {
     const parsedData = exampleSchema.parse(exampleData);
 
-    const existingExample = await this.exampleRepository.findById(parsedData.id);
+    const existingExample = await this.exampleRepository.findById(
+      parsedData.id
+    );
     if (existingExample) {
       throw new Error("Example with this ID already exists");
     }

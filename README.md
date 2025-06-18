@@ -32,6 +32,12 @@ npm install
 npm run start:dev
 ```
 
+<h3>Running Tests<h3>
+
+```bash
+npm test
+```
+
 <h2 id="routes">📍 API Endpoints</h2>
 
 List of available endpoints:
