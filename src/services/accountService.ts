@@ -14,7 +14,7 @@ export class AccountService {
     const existing = await this.repo.findByNumber(number);
     if (existing) throw new Error("Account already exists");
 
-    if(type === undefined && initialBalance === undefined) {
+    if (type === undefined && initialBalance === undefined) {
       throw new Error("Accounts require an initial balance");
     }
 
@@ -116,6 +116,10 @@ export class AccountService {
     receiverNumber: number,
     amount: number
   ): Promise<{ from: Account; to: Account }> {
+    if (amount <= 0) {
+      throw new Error("Transfer amount must be greater than zero");
+    }
+
     const senderAccount = await this.repo.findByNumber(senderNumber);
     const receiverAccount = await this.repo.findByNumber(receiverNumber);
     if (senderAccount === null || receiverAccount === null) throw new Error("There is no account with number " + senderNumber);
@@ -133,7 +137,7 @@ export class AccountService {
             const bonus = Math.floor(amount / 150);
             return { ...typedAccount, points: typedAccount.points + bonus };
           }
-          
+
           return typedAccount;
         });
 
