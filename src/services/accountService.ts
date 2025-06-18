@@ -88,7 +88,11 @@ export class AccountService {
 
   async debitFromAccount(number: number, amount: number): Promise<Account> {
     const account = await this.repo.findByNumber(number);
-    if (account === null) throw new Error("There is no account with number " + number)
+    if (account === null) throw new Error("There is no account with number " + number);
+
+    if (amount < 0) {
+      throw new Error("Transfer amount must not be negative");
+    }
 
     if ((account.type === "normal" || account.type === "bonus") && (account.balance - amount) < -1000) {
       throw new Error("This operation would exceed the negative balance limit of R$ -1.000,00");
