@@ -9,6 +9,7 @@ app.use(express.json());
 
 app.get('/', (req, res) => {
   res.json({ endpoints: [
+    { method: 'GET', path: '/api/banco/conta/:id' },
     { method: 'POST', path: '/api/banco/conta' },
     { method: 'GET', path: '/api/banco/conta/:id/saldo' },
     { method: 'PUT', path: '/api/banco/conta/:id/credito' },
