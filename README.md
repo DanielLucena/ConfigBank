@@ -44,7 +44,7 @@ List of available endpoints:
 ​
 | route               | description                                          
 |----------------------|-----------------------------------------------------
-| <kdb>GET /api/banco/conta/:id</kbd>      | get account by number [endpoint details](#get-account-detail)
+| <kbd>GET /api/banco/conta/:id</kbd>      | get account by number [endpoint details](#get-account-detail)
 | <kbd>POST /api/banco/conta</kbd>     | create account [endpoint details](#post-account-detail)
 | <kbd>POST /api/banco/conta?type=bonus</kbd>     | create bonus account [endpoint details](#post-bonus-account-detail)
 | <kbd>POST /api/banco/conta?type=savings</kbd>     | create savings account [endpoint details](#post-savings-account-detail)
