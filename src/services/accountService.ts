@@ -145,7 +145,6 @@ export class AccountService {
             const bonus = Math.floor(amount / 150);
             return { ...typedAccount, points: typedAccount.points + bonus };
           }
-
           return typedAccount;
         });
 
