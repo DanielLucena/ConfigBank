@@ -12,7 +12,13 @@ export class DebitController {
 
     async debitAmount(req: Request, res: Response): Promise<void> {
         try {
-            const { number, amount } = debitRequestSchema.parse(req.body);
+            const number = parseInt(req.params.id);
+            if (isNaN(number)) {
+                res.status(400).json({ message: "Invalid account number" });
+                return;
+            }
+
+            const { amount } = debitRequestSchema.parse(req.body);
             const accountUpdated = await this.accountService.debitFromAccount(number, amount);
             res.status(200).json({
                 message: "Debit successful",

@@ -4,12 +4,22 @@ import { accountSchema, Account, bonusAccountSchema, BonusAccount, SavingsAccoun
 export class AccountService {
   constructor(private repo = new AccountRepository()) { }
 
+  async getAccount(number: number): Promise<Account> {
+    const account = await this.repo.findByNumber(number);
+    if (account === null) throw new Error("There is no account with number " + number);
+    return account;
+  }
+
   async createAccount(number: number, type?: "bonus" | "savings", initialBalance?: number): Promise<Account> {
     const existing = await this.repo.findByNumber(number);
     if (existing) throw new Error("Account already exists");
 
-    if(type === undefined && initialBalance === undefined) {
+    if (type === undefined && initialBalance === undefined) {
       throw new Error("Accounts require an initial balance");
+    }
+
+    if (type === "savings" && initialBalance === undefined) {
+      throw new Error("Savings accounts require an initial balance");
     }
 
     let account: Account;
@@ -23,7 +33,7 @@ export class AccountService {
     } else if (type === "savings") {
       account = {
         number,
-        balance: 0,
+        balance: initialBalance!,
         type: "savings",
       };
     } else {
@@ -53,6 +63,10 @@ export class AccountService {
     const account = await this.repo.findByNumber(number);
     if (account === null) throw new Error("There is no account with number " + number)
 
+    if (amount < 0) {
+      throw new Error("Transfer amount must not be negative");
+    }
+
     const all = await this.repo.getAll();
     const updated = all.map(acc => {
       if (acc.number === number) {
@@ -78,9 +92,17 @@ export class AccountService {
 
   async debitFromAccount(number: number, amount: number): Promise<Account> {
     const account = await this.repo.findByNumber(number);
-    if (account === null) throw new Error("There is no account with number " + number)
+    if (account === null) throw new Error("There is no account with number " + number);
 
-    if (account.balance < amount) throw new Error("Insufficient funds");
+    if (amount < 0) {
+      throw new Error("Transfer amount must not be negative");
+    }
+
+    if ((account.type === "normal" || account.type === "bonus") && (account.balance - amount) < -1000) {
+      throw new Error("This operation would exceed the negative balance limit of R$ -1.000,00");
+    } else if (account.type === "savings" && account.balance < amount) {
+      throw new Error("Insufficient funds");
+    }
 
     const all = await this.repo.getAll();
     const updated = all.map(acc => {
@@ -102,6 +124,10 @@ export class AccountService {
     receiverNumber: number,
     amount: number
   ): Promise<{ from: Account; to: Account }> {
+    if (amount <= 0) {
+      throw new Error("Transfer amount must be greater than zero");
+    }
+
     const senderAccount = await this.repo.findByNumber(senderNumber);
     const receiverAccount = await this.repo.findByNumber(receiverNumber);
     if (senderAccount === null || receiverAccount === null) throw new Error("There is no account with number " + senderNumber);
@@ -119,7 +145,7 @@ export class AccountService {
             const bonus = Math.floor(amount / 150);
             return { ...typedAccount, points: typedAccount.points + bonus };
           }
-          
+
           return typedAccount;
         });
 

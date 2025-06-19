@@ -1,10 +1,10 @@
 import { z } from "zod";
 
-export const accountTypeEnum = z.enum(["normal", "bonus"]);
+export const accountTypeEnum = z.enum(["normal", "bonus", "savings"]);
 
 export const baseAccountSchema = z.object({
   number: z.number().int().positive(),
-  balance: z.number().nonnegative(),
+  balance: z.number().min(-1000),
   type: accountTypeEnum,
 });
 
@@ -26,10 +26,6 @@ export const accountSchema = z.union([
 export const createAccountSchema = z.object({
   number: z.number().int().positive(),
   initialBalance: z.number().optional(),
-});
-
-export const accountRequestSchema = z.object({
-  number: z.number().int().positive(),
 });
 
 export const interestRequestSchema = baseAccountSchema.extend({
