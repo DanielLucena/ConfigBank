@@ -134,6 +134,28 @@ describe('AccountService', () => {
   });
 
   describe('getBalance', () => {
+    it("should return the balance of a existing account", async () => {
+      const account: Account = { number: 1, type: 'normal', balance: 1000 };
+
+      repo.findByNumber.mockImplementation((num: number) => {
+        if (num === 1) return Promise.resolve(account);
+        return Promise.resolve(null);
+      });
+
+      repo.getAll.mockResolvedValue([account]);
+      repo.save.mockResolvedValue();
+
+      const result = await service.getAccountBalance(1);
+
+      expect(result).toEqual(account.balance);
+    });
+    
+    it("should throw if account does not exist", async () => {
+      repo.findByNumber.mockResolvedValue(null);
+      await expect(service.getAccountBalance(999)).rejects.toThrow(
+        "There is no account with number 999"
+      );
+    });
   });
 
   describe('debitFromAccount', () => {
