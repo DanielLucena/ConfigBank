@@ -212,6 +212,52 @@ describe('AccountService', () => {
   });
 
   describe('creditToAccount', () => {
+    it('should credit to account', async () => {
+      const account: Account = { number: 1, type: 'normal', balance: 1000 };
+      const amount = 200;
+
+      repo.findByNumber.mockImplementation((num: number) => {
+        if (num === 1) return Promise.resolve(account);
+        return Promise.resolve(null);
+      });
+
+      repo.getAll.mockResolvedValue([account]);
+      repo.save.mockResolvedValue();
+
+      const result = await service.creditToAccount(1, amount);
+
+      expect(result).toEqual({ ...account, balance: 1200 });
+    })
+
+    it('should throw if transfer amount is negative', async () => {
+      await expect(service.creditToAccount(1, -100)).rejects.toThrow(
+        "Transfer amount must not be negative"
+      );
+    });
+    
+    it('should credit bonus points for bonus accounts', async () => {
+      const account: Account = { number: 1, type: 'bonus', balance: 1000, points: 10 };
+      const amount = 300;
+
+      repo.findByNumber.mockImplementation((num: number) => {
+        if (num === 1) return Promise.resolve(account);
+        return Promise.resolve(null);
+      });
+
+      repo.getAll.mockResolvedValue([account]);
+      repo.save.mockResolvedValue();
+
+      const result = await service.creditToAccount(1, amount);
+
+      expect(result).toEqual({ ...account, balance: 1300, points: 13 }); // 300 / 100 = 3 pontos
+    });
+
+    it('should throw if account does not exist', async () => {
+      repo.findByNumber.mockResolvedValue(null);
+      await expect(service.creditToAccount(1, 100)).rejects.toThrow(
+        "There is no account with number 1"
+      );
+    });
   });
 
   describe('transferBetweenAccounts', () => {

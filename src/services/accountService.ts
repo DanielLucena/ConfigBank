@@ -63,6 +63,10 @@ export class AccountService {
     const account = await this.repo.findByNumber(number);
     if (account === null) throw new Error("There is no account with number " + number)
 
+    if (amount < 0) {
+      throw new Error("Transfer amount must not be negative");
+    }
+
     const all = await this.repo.getAll();
     const updated = all.map(acc => {
       if (acc.number === number) {
