@@ -16,18 +16,18 @@ export class ExampleRepository {
 
   async findById(id: number): Promise<Example | null> {
     const example = await this.getAll();
-    return example.find(ex => ex.id === id) || null;
+    return example.find((ex) => ex.id === id) || null;
   }
 
   async removeById(id: number): Promise<void> {
     const example = await this.getAll();
-    const filteredExamples = example.filter(ex => ex.id !== id);
+    const filteredExamples = example.filter((ex) => ex.id !== id);
     await this.save(filteredExamples);
   }
 
   async updateById(id: number, updatedExample: Example): Promise<void> {
     const examples = await this.getAll();
-    const index = examples.findIndex(ex => ex.id === id);
+    const index = examples.findIndex((ex) => ex.id === id);
 
     if (index !== -1) {
       examples[index] = { ...examples[index], ...updatedExample };
@@ -35,5 +35,9 @@ export class ExampleRepository {
     } else {
       throw new Error("Example not found");
     }
+  }
+
+  async clear(): Promise<void> {
+    await this.save([]);
   }
 }

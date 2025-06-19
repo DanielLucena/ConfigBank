@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { AccountService } from "../services/accountService";
-import { createAccountSchema, accountRequestSchema, interestRequestSchema } from "../schemas/accountSchema";
+import { createAccountSchema, interestRequestSchema } from "../schemas/accountSchema";
 import { handleError } from "../utils/errorHandler";
 
 export class AccountController {
@@ -10,10 +10,27 @@ export class AccountController {
     this.service = new AccountService();
   }
 
+  async get(req: Request, res: Response): Promise<void> {
+    try {
+      const number = parseInt(req.params.id);
+
+      if (isNaN(number)) {
+        res.status(400).json({ message: "Invalid account number" });
+        return;
+      }
+      
+      const account = await this.service.getAccount(number);
+      res.status(200).json(account);
+    } catch (err: any) {
+      handleError(res, err);
+    }
+  }
+
   async create(req: Request, res: Response): Promise<void> {
     try {
-      const { number, initialBalance} = createAccountSchema.parse(req.body);
+      const { number, initialBalance } = createAccountSchema.parse(req.body);
       const { type } = req.query as { type?: "bonus" | "savings" };
+
       const account = await this.service.createAccount(number, type, initialBalance);
 
       res.status(201).json(account);
@@ -24,7 +41,12 @@ export class AccountController {
 
   async getBalance(req: Request, res: Response): Promise<void> {
     try {
-      const { number } = accountRequestSchema.parse(req.body);
+      const number = parseInt(req.params.id);
+      if (isNaN(number)) {
+        res.status(400).json({ message: "Invalid account number" });
+        return;
+      }
+
       const balance = await this.service.getAccountBalance(number);
 
       res.status(200).json(balance);
