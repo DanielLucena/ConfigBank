@@ -32,3 +32,10 @@ jobs:
       
       - name: Build image
         run: docker build -t configbank-img .
+      
+      - name: Create tag
+        run: |
+          TIMESTAMP=$(date +%Y%m%d%H%M%S)
+          TAG_NAME="build-$TIMESTAMP"
+          git tag $TAG_NAME
+          git push origin $TAG_NAME
