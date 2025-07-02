@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 require('dotenv').config()
 import express from 'express';
 import { router } from './routes';
