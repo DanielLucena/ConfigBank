@@ -12,7 +12,8 @@ permissions:
   contents: write
 
 jobs:
-  lint-code-and-tests:
+  lint:
+    name: Lint Code and Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -27,7 +28,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run lint
+      - name: Run linter
         run: npm run lint
 
       - name: Run tests
