@@ -1,5 +1,5 @@
 import { AccountRepository } from "../repositories/accountRepository";
-import { accountSchema, Account, bonusAccountSchema, BonusAccount, SavingsAccount } from "../schemas/accountSchema";
+import { accountSchema, Account, BonusAccount, SavingsAccount } from "../schemas/accountSchema";
 
 export class AccountService {
   constructor(private repo = new AccountRepository()) { }
@@ -70,7 +70,7 @@ export class AccountService {
     const all = await this.repo.getAll();
     const updated = all.map(acc => {
       if (acc.number === number) {
-        let newAccount = { ...acc, balance: acc.balance + amount };
+        const newAccount = { ...acc, balance: acc.balance + amount };
 
         if (acc.type === "bonus" && !isTransfer) {
           const typedAccount = acc as BonusAccount;
@@ -165,22 +165,18 @@ export class AccountService {
   }
 
   async earnInterest(interest: number): Promise<Account[]> {
-    try {
-      const all = await this.repo.getAll();
-      const updated = all.map(acc => {
-        if (acc.type === "savings") {
-          const typedAccount = acc as SavingsAccount;
-          return { ...typedAccount, balance: typedAccount.balance + (typedAccount.balance * (interest / 100)) };
-        }
-        return acc;
-      });
+    const all = await this.repo.getAll();
+    const updated = all.map(acc => {
+      if (acc.type === "savings") {
+        const typedAccount = acc as SavingsAccount;
+        return { ...typedAccount, balance: typedAccount.balance + (typedAccount.balance * (interest / 100)) };
+      }
+      return acc;
+    });
 
-      await this.repo.save(updated);
+    await this.repo.save(updated);
 
-      const updatedAccounts = updated.filter(acc => acc.type === "savings");
-      return updatedAccounts;
-    } catch (err: any) {
-      throw err;
-    }
+    const updatedAccounts = updated.filter(acc => acc.type === "savings");
+    return updatedAccounts;
   }
 }
