@@ -33,3 +33,52 @@ jobs:
 
       - name: Run tests
         run: npm test
+  
+  release:
+    name: Release on staging
+    if: github.event_name == 'push' && github.ref == 'refs/heads/staging'
+    needs: lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.1'
+    
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build system
+        run: npm run build
+
+      - name: Build image
+        run: docker build -t configbank-img .
+
+      - name: Determine next rc tag
+        id: get_tag
+        run: |
+          git fetch --tags
+          LAST_RC=$(git tag --list 'rc-*' | sort -V | tail -n 1)
+          echo "Última tag: $LAST_RC"
+
+          if [ -z "$LAST_RC" ]; then
+            NEW_RC="rc-1.0"
+          else
+            VERSION=${LAST_RC#rc-}
+            MAJOR=$(echo $VERSION | cut -d. -f1)
+            MINOR=$(echo $VERSION | cut -d. -f2)
+            NEW_RC="rc-$MAJOR.$((MINOR + 1))"
+          fi
+
+          echo "new_tag=$NEW_RC" >> $GITHUB_OUTPUT
+      
+      - name: Create and push tag
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git tag ${{ steps.get_tag.outputs.new_tag }}
+          git push origin ${{ steps.get_tag.outputs.new_tag }}
