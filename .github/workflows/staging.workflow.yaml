@@ -82,3 +82,13 @@ jobs:
           git config user.email "github-actions@github.com"
           git tag ${{ steps.get_tag.outputs.new_tag }}
           git push origin ${{ steps.get_tag.outputs.new_tag }}
+
+      - name: Package system
+        run: |
+          zip -r ${{ steps.get_tag.outputs.new_tag }}.zip dist
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.get_tag.outputs.new_tag }}.zip
+          path: ./${{ steps.get_tag.outputs.new_tag }}.zip
