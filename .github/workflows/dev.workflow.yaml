@@ -1,0 +1,46 @@
+name: CONFIGBANK-CI-DEV
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+    
+permissions:
+  contents: write
+
+jobs:
+  continuous-integration:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.1'
+    
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run linter
+        run: npm run lint
+
+      - name: Run tests
+        run: npm test
+      
+      - name: Build image
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: docker build -t configbank-img .
+      
+      - name: Create tag
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          TIMESTAMP=$(date +%Y%m%d%H%M%S)
+          TAG_NAME="build-$TIMESTAMP"
+          git tag $TAG_NAME
+          git push origin $TAG_NAME
