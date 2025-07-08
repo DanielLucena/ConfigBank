@@ -82,3 +82,15 @@ jobs:
           git config user.email "github-actions@github.com"
           git tag ${{ steps.get_tag.outputs.new_tag }}
           git push origin ${{ steps.get_tag.outputs.new_tag }}
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.get_tag.outputs.new_tag }}.zip
+          path: ./${{ steps.get_tag.outputs.new_tag }}.zip
+
+      - name: Push image to Docker Hub
+        run: |
+          docker login -u rldaniel -p ${{ secrets.DOCKER_HUB_TOKEN }}
+          docker tag configbank-img:latest ${{ secrets.DOCKER_HUB_USERNAME }}/configbank-img:${{ steps.get_tag.outputs.new_tag }}
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/configbank-img:${{ steps.get_tag.outputs.new_tag }}
