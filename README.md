@@ -4,7 +4,8 @@
  <a href="#tech">Technologies</a> • 
  <a href="#started">Getting Started</a> • 
  <a href="#routes">API Endpoints</a> •
- <a href="#colab">Collaborators</a>
+ <a href="#colab">Collaborators</a> •
+ <a href="#distribution">Distribution</a>
 </p>
 
 <p align="center">
@@ -270,3 +271,8 @@ List of available endpoints:
     </td>
   </tr>
 </table>
+
+<h2 id="distribution">🐋 Distribution </h2>
+<h3>Container Image</h3>
+
+- [Docker Hub](https://hub.docker.com/r/rldaniel/configbank-img)
