@@ -2,7 +2,7 @@ import fs from "fs/promises";
 import path from "path";
 import { Account } from "../schemas/accountSchema";
 
-const dataFile = path.resolve(__dirname, "../../data/accounts.json");
+const dataFile = path.resolve(process.cwd(), "data/accounts.json");
 
 export class AccountRepository {
   async getAll(): Promise<Account[]> {
