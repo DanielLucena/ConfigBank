@@ -4,7 +4,7 @@
   "description": "<h1 align=\"center\" style=\"font-weight: bold;\">ConfigBank 🏦</h1>",
   "main": "index.js",
   "scripts": {
-    "build": "tsup src",
+    "build": "tsup src && cp -r data dist/data",
     "start": "node dist/server.js",
     "start:dev": "tsx watch src/server.ts",
     "test": "jest --verbose",
