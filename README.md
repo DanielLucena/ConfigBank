@@ -4,7 +4,8 @@
  <a href="#tech">Technologies</a> • 
  <a href="#started">Getting Started</a> • 
  <a href="#routes">API Endpoints</a> •
- <a href="#colab">Collaborators</a>
+ <a href="#colab">Collaborators</a> •
+ <a href="#distribution">Distribution</a>
 </p>
 
 <p align="center">
@@ -24,12 +25,21 @@
 
 - [Node.js](https://nodejs.org/)
 
-<h3>Starting</h3>
+<h3>Starting for development</h3>
 
 ```bash
 cd ConfigBank
 npm install
 npm run start:dev
+```
+
+<h3>Build and start</h3>
+
+```bash
+cd ConfigBank
+npm install
+npm run build
+npm run start
 ```
 
 <h3>Running Tests<h3>
@@ -81,7 +91,7 @@ List of available endpoints:
 ```json
 {
   "number": 1,
-  "balance": 0,
+  "initialBalance": 0,
   "type": "normal"
 }
 ```
@@ -99,7 +109,7 @@ List of available endpoints:
 ```json
 {
   "number": 1,
-  "balance": 0,
+  "initialBalance": 0,
   "type": "bonus",
   "points": 10
 }
@@ -118,7 +128,7 @@ List of available endpoints:
 ```json
 {
   "number": 1,
-  "balance": 0,
+  "initialBalance": 0,
   "type": "savings",
 }
 ```
@@ -261,3 +271,8 @@ List of available endpoints:
     </td>
   </tr>
 </table>
+
+<h2 id="distribution">🐋 Distribution </h2>
+<h3>Container Image</h3>
+
+- [Docker Hub](https://hub.docker.com/r/rldaniel/configbank-img)

@@ -1,0 +1,96 @@
+name: CONFIGBANK-CI-PRODUCTION
+
+on:
+  push:
+    branches:
+      - production
+  pull_request:
+    branches:
+      - production
+
+permissions:
+  contents: write
+
+jobs:
+  lint:
+    name: Lint Code and Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.1'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run linter
+        run: npm run lint
+
+      - name: Run tests
+        run: npm test
+  
+  release:
+    name: Release on production
+    if: github.event_name == 'push' && github.ref == 'refs/heads/production'
+    needs: lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.1'
+    
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build system
+        run: npm run build
+
+      - name: Build image
+        run: docker build -t configbank-img .
+
+      - name: Determine next rel tag
+        id: get_tag
+        run: |
+          git fetch --tags
+          LAST_RC=$(git tag --list 'rc-*' | sort -V | tail -n 1)
+          echo "Última tag rc: $LAST_RC"
+
+          if [ -z "$LAST_RC" ]; then
+            NEW_REL="rel-1.0"
+          else
+            VERSION=${LAST_RC#rc-}
+            MAJOR=$(echo $VERSION | cut -d. -f1)
+            MINOR=$(echo $VERSION | cut -d. -f2)
+            NEW_REL="rel-$((MAJOR + 1)).0"
+          fi
+
+          echo "new_tag=$NEW_REL" >> $GITHUB_OUTPUT
+      
+      - name: Create and push tag
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git tag ${{ steps.get_tag.outputs.new_tag }}
+          git push origin ${{ steps.get_tag.outputs.new_tag }}
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.get_tag.outputs.new_tag }}.zip
+          path: ./${{ steps.get_tag.outputs.new_tag }}.zip
+
+      - name: Push image to Docker Hub
+        run: |
+          docker login -u rldaniel -p ${{ secrets.DOCKER_HUB_TOKEN }}
+          docker tag configbank-img:latest ${{ secrets.DOCKER_HUB_USERNAME }}/configbank-img:${{ steps.get_tag.outputs.new_tag }}
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/configbank-img:${{ steps.get_tag.outputs.new_tag }}
