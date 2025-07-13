@@ -70,7 +70,7 @@ export class AccountService {
     const all = await this.repo.getAll();
     const updated = all.map(acc => {
       if (acc.number === number) {
-        const newAccount = { ...acc, balance: acc.balance };
+        const newAccount = { ...acc, balance: acc.balance + amount };
 
         if (acc.type === "bonus" && !isTransfer) {
           const typedAccount = acc as BonusAccount;
