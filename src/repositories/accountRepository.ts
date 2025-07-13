@@ -18,3 +18,4 @@ export class AccountRepository {
     const accounts = await this.getAll();
     return accounts.find(acc => acc.number === number) || null;
   }
+}
