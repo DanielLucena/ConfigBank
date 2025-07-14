@@ -183,7 +183,7 @@ describe('AccountService', () => {
     });
 
     it('should throw if the balance would exceed negative limit for normal and bonus accounts', async () => {
-      const account: Account = { number: 1, type: 'normal', balance: -900 };
+      const account: Account = { number: 1, type: 'normal', balance: -1900 };
       const amount = 200;
 
       repo.findByNumber.mockImplementation((num: number) => {
@@ -331,7 +331,7 @@ describe('AccountService', () => {
     });
 
     it('should throw if sender balance would exceed negative limit for normal and bonus accounts', async () => {
-      const sender: Account = { number: 1, type: 'normal', balance: -900 };
+      const sender: Account = { number: 1, type: 'normal', balance: -1900 };
       const receiver: Account = { number: 2, type: 'normal', balance: 500 };
       const amount = 200;
 

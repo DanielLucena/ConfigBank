@@ -98,7 +98,7 @@ export class AccountService {
       throw new Error("Transfer amount must not be negative");
     }
 
-    if ((account.type === "normal" || account.type === "bonus") && (account.balance - amount) < -1000) {
+    if ((account.type === "normal" || account.type === "bonus") && (account.balance - amount) < -2000) {
       throw new Error("This operation would exceed the negative balance limit of R$ -1.000,00");
     } else if (account.type === "savings" && account.balance < amount) {
       throw new Error("Insufficient funds");
